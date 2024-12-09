@@ -15,6 +15,7 @@ const runInterval = process.env.RUN_INTERVAL || '30'
 const runIterations = process.env.RUN_ITERATIONS || '1'
 const enableBail = process.env.ENABLE_BAIL || 'false'
 const requestMetrics = process.env.ENABLE_REQUEST_METRICS || 'true'
+const allowInsecure = process.env.ALLOW_INSECURE || 'false'
 
 let collectionName = ''
 let resultSummary = {}
@@ -164,6 +165,9 @@ app.listen(port, async () => {
   if (statusEnabled == 'true') {
     logMessage(` - Status API endpoint: http://0.0.0.0:${port}/status`)
   }
+  if (allowInsecure == 'true') {
+    logMessage(` - WARNING - Insecure requests allowed`)
+  }
   logMessage(` - Collection will be run every ${runInterval} seconds`)
   logMessage(` - Config refresh will be run every ${refreshInterval} seconds`)
 
@@ -258,6 +262,7 @@ function runCollection() {
         bail: enableBail == 'true',
         environment: envData,
         envVar: postmanEnvVar,
+        insecure: allowInsecure,
       },
       runComplete
     )
